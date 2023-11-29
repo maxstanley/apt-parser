@@ -174,7 +174,17 @@ mod tests {
 		}
 		assert_eq!(packages.len(), 415);
 
-		let actual_package = &packages[0];
+		let package_sha256 =
+			"9f9f615c50e917e0ce629966899ed28ba78fa637c5de5476aac34f630ab18dd5".to_owned();
+
+		let actual_package = packages
+			.into_iter()
+			.find(|package| package.sha256sum == Some(package_sha256.clone()));
+
+		let actual_package = match actual_package {
+			Some(package) => package,
+			None => panic!("Failed to find expected package"),
+		};
 
 		let expected_package = Package {
 			// We are not testing `map`, here we ensure the two structs will be equal.
@@ -212,14 +222,12 @@ mod tests {
 			size: 9618,
 			md5sum: Some("e0be09b9f6d1c17371701d0ed6f625bf".to_owned()),
 			sha1sum: None,
-			sha256sum: Some(
-				"9f9f615c50e917e0ce629966899ed28ba78fa637c5de5476aac34f630ab18dd5".to_owned(),
-			),
+			sha256sum: Some(package_sha256),
 			sha512sum: None,
 			description_md5sum: None,
 		};
 
-		assert_eq!(actual_package, &expected_package);
+		assert_eq!(actual_package, expected_package);
 
 		assert_eq!(
 			actual_package.get("Depiction"),
@@ -250,8 +258,19 @@ mod tests {
 			panic!("Failed to parse packages: {:?}", packages.errors);
 		}
 
-		let actual_package = &packages[0];
 		assert_eq!(packages.len(), 6132);
+
+		let package_sha256 =
+			"9823e2e330e3ca986440eb5117574c29c1247efc4e8e23cd3b936013dff493b1".to_owned();
+
+		let actual_package = packages
+			.into_iter()
+			.find(|package| package.sha256sum == Some(package_sha256.clone()));
+
+		let actual_package = match actual_package {
+			Some(package) => package,
+			None => panic!("Failed to find expected package"),
+		};
 
 		let expected_package = Package {
 			// We are not testing `map`, here we ensure the two structs will be equal.
@@ -286,12 +305,12 @@ mod tests {
             size: 66304,
             md5sum: Some("d1dc884f3b039c09d9aaa317d6614582".to_owned()),
             sha1sum: Some("f0c2c870146d05b8d53cd805527e942ca793ce38".to_owned()),
-            sha256sum: Some("9823e2e330e3ca986440eb5117574c29c1247efc4e8e23cd3b936013dff493b1".to_owned()),
+            sha256sum: Some(package_sha256),
             sha512sum: Some("9d816378feaa1cb1135212b416321059b86ee622eccfd3e395b863e5b2ea976244c2b2c016b44f5bf6a30f18cd04406c0193f0da13ca296aac0212975f763bd7".to_owned()),
             description_md5sum: Some("8aeed0a03c7cd494f0c4b8d977483d7e".to_owned()),
         };
 
-		assert_eq!(actual_package, &expected_package);
+		assert_eq!(actual_package, expected_package);
 
 		assert_eq!(actual_package.get("Origin"), Some("Ubuntu"));
 
