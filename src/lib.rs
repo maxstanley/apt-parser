@@ -114,7 +114,7 @@ pub fn parse_kv(raw_apt_data: &str) -> Result<CaseMap, KVError> {
 }
 
 pub fn make_array(raw_data: Option<&String>) -> Option<Vec<String>> {
-	return match raw_data {
+	match raw_data {
 		Some(raw_data) => {
 			let mut data = Vec::new();
 			for line in raw_data.split(',') {
@@ -124,5 +124,5 @@ pub fn make_array(raw_data: Option<&String>) -> Option<Vec<String>> {
 			Some(data)
 		}
 		None => None,
-	};
+	}
 }

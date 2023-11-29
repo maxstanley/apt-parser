@@ -5,6 +5,12 @@ pub struct CaseMap {
 	map: HashMap<String, String>,
 }
 
+impl Default for CaseMap {
+	fn default() -> Self {
+		Self::new()
+	}
+}
+
 impl CaseMap {
 	pub fn new() -> CaseMap {
 		CaseMap {
@@ -46,14 +52,15 @@ impl CaseMap {
 	}
 
 	pub fn contains_key(&self, key: &str) -> bool {
-		match self.get_proper_key(key) {
-			Some(_) => true,
-			None => false,
-		}
+		self.get_proper_key(key).is_some()
 	}
 
 	pub fn len(&self) -> usize {
 		self.map.len() / 2
+	}
+
+	pub fn is_empty(&self) -> bool {
+		self.len() == 0
 	}
 
 	pub fn iter(&self) -> Iter<'_, String, String> {

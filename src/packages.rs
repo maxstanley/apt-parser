@@ -117,7 +117,7 @@ impl Packages {
 		let iter = binding.trim().split("\n\n").par_bridge().into_par_iter();
 
 		let values = iter
-			.map(|package| Package::from(&package))
+			.map(Package::from)
 			.collect::<Vec<Result<Package, APTError>>>();
 
 		let mut packages = Vec::new();
@@ -135,6 +135,10 @@ impl Packages {
 
 	pub fn len(&self) -> usize {
 		self.packages.len()
+	}
+
+	pub fn is_empty(&self) -> bool {
+		self.packages.is_empty()
 	}
 }
 
