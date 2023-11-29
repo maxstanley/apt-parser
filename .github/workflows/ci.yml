@@ -9,7 +9,6 @@ on:
       - main
 
 env:
-  RUST_MINVERSION: 1.56.0
   CARGO_INCREMENTAL: 0
   CARGO_NET_RETRY: 10
 
@@ -24,7 +23,6 @@ jobs:
           - stable
           - beta
           - nightly
-          - 1.56.0
 
     steps:
       - name: Checkout sources
