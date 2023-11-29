@@ -156,6 +156,7 @@ impl Index<usize> for Packages {
 
 #[cfg(test)]
 mod tests {
+	use super::Package;
 	use super::Packages;
 	use std::fs::read_to_string;
 
@@ -171,76 +172,67 @@ mod tests {
 		if !packages.errors.is_empty() {
 			panic!("Failed to parse packages: {:?}", packages.errors);
 		}
-
-		let control = &packages[0];
 		assert_eq!(packages.len(), 415);
 
-		assert_eq!(control.package, "arpoison");
-		assert_eq!(control.source, None);
-		assert_eq!(control.version, "0.7");
-		assert_eq!(control.section, Some("System".to_owned()));
-		assert_eq!(control.priority, None);
-		assert_eq!(control.architecture, "iphoneos-arm");
-		assert_eq!(control.is_essential, None);
+		let actual_package = &packages[0];
 
-		assert_eq!(control.depends, Some(vec!["libnet9".to_owned()]));
-		assert_eq!(control.pre_depends, None);
-		assert_eq!(control.recommends, None);
-		assert_eq!(control.suggests, None);
-		assert_eq!(control.replaces, None);
-		assert_eq!(control.enhances, None);
-		assert_eq!(control.breaks, None);
-		assert_eq!(control.conflicts, None);
+		let expected_package = Package {
+			// We are not testing `map`, here we ensure the two structs will be equal.
+			map: actual_package.map.clone(),
 
-		assert_eq!(control.installed_size, Some(88));
-		assert_eq!(
-			control.maintainer,
-			Some("MidnightChips <midnightchips@gmail.com>".to_owned())
-		);
-		assert_eq!(
-			control.description,
-			Some("Generates user-defined ARP packets".to_owned())
-		);
-		assert_eq!(
-			control.homepage,
-			Some("http://www.arpoison.net/".to_owned())
-		);
-		assert_eq!(control.built_using, None);
-		assert_eq!(control.package_type, None);
-		assert_eq!(
-			control.tags,
-			Some(vec![
+			package: "arpoison".to_owned(),
+			source: None,
+			version: "0.7".to_owned(),
+			section: Some("System".to_owned()),
+			priority: None,
+			architecture: "iphoneos-arm".to_owned(),
+			is_essential: None,
+
+			depends: Some(vec!["libnet9".to_owned()]),
+			pre_depends: None,
+			recommends: None,
+			suggests: None,
+			replaces: None,
+			enhances: None,
+			breaks: None,
+			conflicts: None,
+
+			installed_size: Some(88),
+			maintainer: Some("MidnightChips <midnightchips@gmail.com>".to_owned()),
+			description: Some("Generates user-defined ARP packets".to_owned()),
+			homepage: Some("http://www.arpoison.net/".to_owned()),
+			built_using: None,
+			package_type: None,
+			tags: Some(vec![
 				"role::developer".to_owned(),
 				"compatible_min::ios14.0".to_owned(),
-			])
-		);
+			]),
 
-		assert_eq!(control.filename, "debs/arpoison_0.7_iphoneos-arm.deb");
-		assert_eq!(control.size, 9618);
-		assert_eq!(
-			control.md5sum,
-			Some("e0be09b9f6d1c17371701d0ed6f625bf".to_owned())
-		);
-		assert_eq!(control.sha1sum, None);
-		assert_eq!(
-			control.sha256sum,
-			Some("9f9f615c50e917e0ce629966899ed28ba78fa637c5de5476aac34f630ab18dd5".to_owned())
-		);
-		assert_eq!(control.sha512sum, None);
-		assert_eq!(control.description_md5sum, None);
+			filename: "debs/arpoison_0.7_iphoneos-arm.deb".to_owned(),
+			size: 9618,
+			md5sum: Some("e0be09b9f6d1c17371701d0ed6f625bf".to_owned()),
+			sha1sum: None,
+			sha256sum: Some(
+				"9f9f615c50e917e0ce629966899ed28ba78fa637c5de5476aac34f630ab18dd5".to_owned(),
+			),
+			sha512sum: None,
+			description_md5sum: None,
+		};
+
+		assert_eq!(actual_package, &expected_package);
 
 		assert_eq!(
-			control.get("Depiction"),
+			actual_package.get("Depiction"),
 			Some("https://chariz.com/get/arpoison")
 		);
 
 		assert_eq!(
-			control.get("SileoDepiction"),
+			actual_package.get("SileoDepiction"),
 			Some("https://repo.chariz.com/api/sileo/package/arpoison/depiction.json")
 		);
 
 		assert_eq!(
-			control.get("Author"),
+			actual_package.get("Author"),
 			Some("MidnightChips <midnightchips@gmail.com>")
 		);
 	}
@@ -258,96 +250,64 @@ mod tests {
 			panic!("Failed to parse packages: {:?}", packages.errors);
 		}
 
-		let control = &packages[0];
+		let actual_package = &packages[0];
 		assert_eq!(packages.len(), 6132);
 
-		assert_eq!(control.package, "accountsservice");
-		assert_eq!(control.source, None);
-		assert_eq!(control.version, "0.6.55-3ubuntu2");
-		assert_eq!(control.section, Some("gnome".to_owned()));
-		assert_eq!(control.priority, Some("optional".to_owned()));
-		assert_eq!(control.architecture, "amd64");
-		assert_eq!(control.is_essential, None);
+		let expected_package = Package {
+			// We are not testing `map`, here we ensure the two structs will be equal.
+			map: actual_package.map.clone(),
+
+            package: "accountsservice".to_owned(),
+            source: None,
+            version: "0.6.55-3ubuntu2".to_owned(),
+            section: Some("gnome".to_owned()),
+            priority: Some("optional".to_owned()),
+            architecture: "amd64".to_owned(),
+            is_essential: None,
+
+            depends: Some(vec!["dbus (>= 1.9.18)".to_owned(), "libaccountsservice0 (= 0.6.55-3ubuntu2)".to_owned(), "libc6 (>= 2.34)".to_owned(), "libglib2.0-0 (>= 2.44)".to_owned(), "libpolkit-gobject-1-0 (>= 0.99)".to_owned()]),
+            pre_depends: None,
+            recommends: Some(vec!["default-logind | logind".to_owned()]),
+            suggests: Some(vec!["gnome-control-center".to_owned()]),
+            replaces: None,
+            enhances: None,
+            breaks: None,
+            conflicts: None,
+
+            installed_size: Some(484),
+            maintainer: Some("Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>".to_owned()),
+            description: Some("query and manipulate user account information".to_owned()),
+            homepage: Some("https://www.freedesktop.org/wiki/Software/AccountsService/".to_owned()),
+            built_using: None,
+            package_type: None,
+            tags: None,
+
+            filename: "pool/main/a/accountsservice/accountsservice_0.6.55-3ubuntu2_amd64.deb".to_owned(),
+            size: 66304,
+            md5sum: Some("d1dc884f3b039c09d9aaa317d6614582".to_owned()),
+            sha1sum: Some("f0c2c870146d05b8d53cd805527e942ca793ce38".to_owned()),
+            sha256sum: Some("9823e2e330e3ca986440eb5117574c29c1247efc4e8e23cd3b936013dff493b1".to_owned()),
+            sha512sum: Some("9d816378feaa1cb1135212b416321059b86ee622eccfd3e395b863e5b2ea976244c2b2c016b44f5bf6a30f18cd04406c0193f0da13ca296aac0212975f763bd7".to_owned()),
+            description_md5sum: Some("8aeed0a03c7cd494f0c4b8d977483d7e".to_owned()),
+        };
+
+		assert_eq!(actual_package, &expected_package);
+
+		assert_eq!(actual_package.get("Origin"), Some("Ubuntu"));
 
 		assert_eq!(
-			control.depends,
-			Some(vec![
-				"dbus (>= 1.9.18)".to_owned(),
-				"libaccountsservice0 (= 0.6.55-3ubuntu2)".to_owned(),
-				"libc6 (>= 2.34)".to_owned(),
-				"libglib2.0-0 (>= 2.44)".to_owned(),
-				"libpolkit-gobject-1-0 (>= 0.99)".to_owned(),
-			])
-		);
-		assert_eq!(control.pre_depends, None);
-		assert_eq!(
-			control.recommends,
-			Some(vec!["default-logind | logind".to_owned()])
-		);
-		assert_eq!(
-			control.suggests,
-			Some(vec!["gnome-control-center".to_owned()])
-		);
-		assert_eq!(control.replaces, None);
-		assert_eq!(control.enhances, None);
-		assert_eq!(control.breaks, None);
-		assert_eq!(control.conflicts, None);
-
-		assert_eq!(control.installed_size, Some(484));
-		assert_eq!(
-			control.maintainer,
-			Some("Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>".to_owned())
-		);
-		assert_eq!(
-			control.description,
-			Some("query and manipulate user account information".to_owned())
-		);
-		assert_eq!(
-			control.homepage,
-			Some("https://www.freedesktop.org/wiki/Software/AccountsService/".to_owned())
-		);
-		assert_eq!(control.built_using, None);
-		assert_eq!(control.package_type, None);
-		assert_eq!(control.tags, None);
+            actual_package.get("Original-Maintainer"),
+            Some("Debian freedesktop.org maintainers <pkg-freedesktop-maintainers@lists.alioth.debian.org>")
+        );
 
 		assert_eq!(
-			control.filename,
-			"pool/main/a/accountsservice/accountsservice_0.6.55-3ubuntu2_amd64.deb"
-		);
-		assert_eq!(control.size, 66304);
-		assert_eq!(
-			control.md5sum,
-			Some("d1dc884f3b039c09d9aaa317d6614582".to_owned())
-		);
-		assert_eq!(
-			control.sha1sum,
-			Some("f0c2c870146d05b8d53cd805527e942ca793ce38".to_owned())
-		);
-		assert_eq!(
-			control.sha256sum,
-			Some("9823e2e330e3ca986440eb5117574c29c1247efc4e8e23cd3b936013dff493b1".to_owned())
-		);
-		assert_eq!(control.sha512sum, Some("9d816378feaa1cb1135212b416321059b86ee622eccfd3e395b863e5b2ea976244c2b2c016b44f5bf6a30f18cd04406c0193f0da13ca296aac0212975f763bd7".to_owned()));
-		assert_eq!(
-			control.description_md5sum,
-			Some("8aeed0a03c7cd494f0c4b8d977483d7e".to_owned())
-		);
-
-		assert_eq!(control.get("Origin"), Some("Ubuntu"));
-
-		assert_eq!(
-			control.get("Original-Maintainer"),
-			Some("Debian freedesktop.org maintainers <pkg-freedesktop-maintainers@lists.alioth.debian.org>")
-		);
-
-		assert_eq!(
-			control.get("Bugs"),
+			actual_package.get("Bugs"),
 			Some("https://bugs.launchpad.net/ubuntu/+filebug")
 		);
 
 		assert_eq!(
-			control.get("Task"),
-			Some("ubuntu-desktop-minimal, ubuntu-desktop, ubuntu-desktop-raspi, kubuntu-desktop, xubuntu-core, xubuntu-desktop, lubuntu-desktop, ubuntustudio-desktop-core, ubuntustudio-desktop, ubuntukylin-desktop, ubuntu-mate-core, ubuntu-mate-desktop, ubuntu-budgie-desktop, ubuntu-budgie-desktop-raspi")
+            actual_package.get("Task"),
+            Some("ubuntu-desktop-minimal, ubuntu-desktop, ubuntu-desktop-raspi, kubuntu-desktop, xubuntu-core, xubuntu-desktop, lubuntu-desktop, ubuntustudio-desktop-core, ubuntustudio-desktop, ubuntukylin-desktop, ubuntu-mate-core, ubuntu-mate-desktop, ubuntu-budgie-desktop, ubuntu-budgie-desktop-raspi")
 		);
 	}
 }
