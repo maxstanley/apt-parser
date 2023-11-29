@@ -6,6 +6,7 @@ use crate::{
 use rayon::prelude::*;
 use std::ops::Index;
 
+#[derive(Debug, PartialEq, Eq)]
 pub struct Package {
 	pub(crate) map: CaseMap,
 	pub package: String,

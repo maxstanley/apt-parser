@@ -1,6 +1,6 @@
 use std::collections::{hash_map::Iter, HashMap};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CaseMap {
 	map: HashMap<String, String>,
 }
