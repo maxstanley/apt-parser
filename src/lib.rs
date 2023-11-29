@@ -10,7 +10,6 @@ pub use release::*;
 
 use case_map::CaseMap;
 use errors::KVError;
-use regex::Regex;
 
 #[warn(clippy::all)]
 #[warn(clippy::correctness)]
@@ -19,6 +18,13 @@ use regex::Regex;
 #[warn(clippy::style)]
 #[warn(clippy::complexity)]
 #[warn(clippy::perf)]
+
+fn parse_line(line: &str) -> Option<(&str, &str)> {
+	let (line, key) = nom::bytes::complete::is_not::<_, _, ()>(":")(line).ok()?;
+	let (value, _) = nom::bytes::complete::tag::<_, _, ()>(": ")(line).ok()?;
+
+	Some((key, value))
+}
 
 // HashMap<String, String>
 pub fn parse_kv(raw_apt_data: &str) -> Result<CaseMap, KVError> {
@@ -29,12 +35,6 @@ pub fn parse_kv(raw_apt_data: &str) -> Result<CaseMap, KVError> {
 	let mut fields = CaseMap::new();
 	let mut current_key = "";
 
-	// Compile our regex before-hand
-	let regex = match Regex::new(r"^(.*?):\s(.*)$") {
-		Ok(regex) => regex,
-		Err(_) => return Err(KVError),
-	};
-
 	for line in apt_data {
 		let line = line.trim();
 
@@ -42,54 +42,43 @@ pub fn parse_kv(raw_apt_data: &str) -> Result<CaseMap, KVError> {
 			continue;
 		}
 
-		if !regex.is_match(line) {
-			if line.ends_with(':') {
-				let mut chars = line.chars();
-				chars.next_back(); // Pop the last character off
+		let (key, value) = match parse_line(line) {
+			Some(kv) => kv,
+			None => {
+				if line.ends_with(':') {
+					let mut chars = line.chars();
+					chars.next_back(); // Pop the last character off
 
-				current_key = chars.as_str();
-				fields.insert(current_key, "");
-				continue;
-			}
-
-			if !current_key.is_empty() {
-				let existing_value = match fields.get(current_key) {
-					Some(value) => value,
-					None => "",
-				};
-
-				// On multiline descriptions, the '.' signifies a newline (blank)
-				if line == "." {
-					let updated_key = format!("{existing_value}\n\n");
-					fields.insert(current_key, &updated_key);
-				} else {
-					let updated_key = match existing_value.ends_with('\n') {
-						true => format!("{existing_value}{line}"),
-						false => format!("{existing_value} {line}"),
-					};
-
-					fields.insert(current_key, &updated_key);
+					current_key = chars.as_str();
+					fields.insert(current_key, "");
+					continue;
 				}
 
-				continue;
+				if !current_key.is_empty() {
+					let existing_value = match fields.get(current_key) {
+						Some(value) => value,
+						None => "",
+					};
+
+					// On multiline descriptions, the '.' signifies a newline (blank)
+					if line == "." {
+						let updated_key = format!("{existing_value}\n\n");
+						fields.insert(current_key, &updated_key);
+					} else {
+						let updated_key = match existing_value.ends_with('\n') {
+							true => format!("{existing_value}{line}"),
+							false => format!("{existing_value} {line}"),
+						};
+
+						fields.insert(current_key, &updated_key);
+					}
+
+					continue;
+				}
+
+				return Err(KVError);
 			}
-		}
-
-		let captures = regex.captures(line);
-		if captures.is_none() {
-			return Err(KVError);
-		}
-
-		let captures = captures.unwrap();
-		let key = captures.get(1);
-		let value = captures.get(2);
-
-		if key.is_none() || value.is_none() {
-			return Err(KVError);
 		};
-
-		let key = key.unwrap().as_str();
-		let value = value.unwrap().as_str();
 
 		if fields.contains_key(key) {
 			continue;

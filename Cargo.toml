@@ -17,4 +17,4 @@ exclude = ["/.vscode", "/test", "/target", ".gitignore", ".rustfmt.toml"]
 
 [dependencies]
 rayon = "1.6.1"
-regex = "1.7.1"
+nom = "7.1.3"
